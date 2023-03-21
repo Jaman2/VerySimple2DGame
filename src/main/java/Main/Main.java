@@ -1,4 +1,4 @@
-package org.TheGameItself;
+package Main;
 
 import javax.swing.*;
 
