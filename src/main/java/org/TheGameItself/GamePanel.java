@@ -15,6 +15,13 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenColumns;
     final int screenHeight = tileSize * maxScreenRows;
 
+    final int FPSCap = 60;
+
+    //player here for now :)
+    int playerX = 100;
+    int playerY = 100;
+    int playerSpeed = 5;
+
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
     public GamePanel() {
@@ -22,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
+        this.setFocusable(true);
     }
 
     public void startGameThread() {
@@ -30,19 +38,47 @@ public class GamePanel extends JPanel implements Runnable {
     }
     @Override
     public void run() {
+        double drawInterval = 1000000000.0/FPSCap;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
         while(gameThread != null) {
-            update();
-            repaint();
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
+
+            if(delta >= 1)
+            {
+                update();
+                repaint();
+                delta--;
+            }
         }
     }
     public void update() {
+        if(keyHandler.upPressed && playerY>playerSpeed)
+        {
+            playerY -= playerSpeed;
+        }
+        if(keyHandler.downPressed && playerY<(screenHeight-tileSize))
+        {
+            playerY += playerSpeed;
+        }
 
+        if(keyHandler.leftPressed && playerX>playerSpeed)
+        {
+            playerX -= playerSpeed;
+        }
+        if(keyHandler.rightPressed && playerX<(screenWidth-tileSize))
+        {
+            playerX += playerSpeed;
+        }
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         g2.setColor(Color.cyan);
-        g2.fillRect(tileSize*2, tileSize*2, tileSize, tileSize);
+        g2.fillRect(playerX, playerY, tileSize, tileSize);
         g2.dispose();
     }
 }
