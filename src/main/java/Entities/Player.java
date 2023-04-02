@@ -3,10 +3,8 @@ package Entities;
 import Main.GamePanel;
 import Main.KeyHandler;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Player extends Entity {
     GamePanel gamePanel;
@@ -18,13 +16,10 @@ public class Player extends Entity {
         getPlayerImage();
     }
     public void getPlayerImage () {
-        try {
-            runRight = ImageIO.read(getClass().getResourceAsStream("/player/runRight.gif"));
-            runLeft = ImageIO.read(getClass().getResourceAsStream("/player/runLeft.gif"));
-            idle = ImageIO.read(getClass().getResourceAsStream("/player/idle.gif"));
-        }catch(IOException e) {
-            System.out.println(e);
-        }
+        FileHandler files = new FileHandler();
+        idle = files.getImagesForAnimation("idle", 10);
+        runLeft = files.getImagesForAnimation("runLeft", 10);
+        runRight = files.getImagesForAnimation("runRight", 10);
     }
     public void setDefaultValues() {
         //Yes I'm not making anything usefull here, I could be deleted and defaults could be set in constructor, but whatever.
@@ -64,12 +59,13 @@ public class Player extends Entity {
     }
 
     public void draw(Graphics2D graphics2D) {
+        int whichFrameToDraw = (gamePanel.frame - 1) / 6;
         BufferedImage image = switch (action) {
-            case "idle" -> idle;
-            case "runLeft" -> runLeft;
-            case "runRight" -> runRight;
+            case "idle" -> idle[whichFrameToDraw];
+            case "runLeft" -> runLeft[whichFrameToDraw];
+            case "runRight" -> runRight[whichFrameToDraw];
             default -> null;
         };
-        graphics2D.drawImage(image, positionX, positionY, gamePanel.tileSize, gamePanel.tileSize, null);
+        graphics2D.drawImage(image, positionX, positionY, 120, 80, null);
     }
 }
