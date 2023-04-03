@@ -66,6 +66,6 @@ public class Player extends Entity {
             case "runRight" -> runRight[whichFrameToDraw];
             default -> null;
         };
-        graphics2D.drawImage(image, positionX, positionY, 120, 80, null);
+        graphics2D.drawImage(image, positionX, positionY, gamePanel.tileSize, gamePanel.tileSize, null);
     }
 }
