@@ -1,10 +1,9 @@
 import os
+from PIL import Image
 folder = "runLeft"
 
-for i in range(5):
-    swap1 = folder + "/frame0" + str(i) + ".png"
-    swap2 = folder + "/frame0" + str(9-i) + ".png"
-    temp = folder + "/temp.png"
-    os.rename(swap1, temp);
-    os.rename(swap2, swap1);
-    os.rename(temp, swap2);
+for i in range(10):
+    im = Image.open(folder + "/frame0" + str(i) + ".png")
+    print("pp")
+    im = im.crop((40, 40, 70, 80))
+    im.save("frame0" + str(i) + ".png")
