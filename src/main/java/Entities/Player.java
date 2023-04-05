@@ -22,10 +22,9 @@ public class Player extends Entity {
         runRight = files.getImagesForAnimation("runRight", 10);
     }
     public void setDefaultValues() {
-        //Yes I'm not making anything usefull here, I could be deleted and defaults could be set in constructor, but whatever.
-        positionX = 50;
-        positionY = 50;
-        movementSpeed = 5;
+        positionX = gamePanel.tileSize;
+        positionY = gamePanel.tileSize;
+        movementSpeed = 3;
         action = "idle";
     }
 
