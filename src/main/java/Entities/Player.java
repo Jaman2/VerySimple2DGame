@@ -1,7 +1,8 @@
 package Entities;
 
-import Main.GamePanel;
-import Main.KeyHandler;
+import Utilities.FileHandler;
+import Utilities.GamePanel;
+import Utilities.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,9 +18,9 @@ public class Player extends Entity {
     }
     public void getPlayerImage () {
         FileHandler files = new FileHandler();
-        idle = files.getImagesForAnimation("idle", 10);
-        runLeft = files.getImagesForAnimation("runLeft", 10);
-        runRight = files.getImagesForAnimation("runRight", 10);
+        idle = files.getImagesAsArray("/player/idle/", "frame0", ".png", 10);
+        runLeft = files.getImagesAsArray("/player/runLeft/", "frame0", ".png", 10);
+        runRight = files.getImagesAsArray("/player/runRight/", "frame0", ".png", 10);
     }
     public void setDefaultValues() {
         positionX = gamePanel.tileSize;
