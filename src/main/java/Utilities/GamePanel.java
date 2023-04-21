@@ -17,12 +17,14 @@ public class GamePanel extends JPanel implements Runnable {
     final public int maxScreenRows = 12;
     final public int screenWidth = tileSize * maxScreenColumns;
     final public int screenHeight = tileSize * maxScreenRows;
+    final public int maxWorldColumns = 50;
+    final public int  maxWorldRows = 50;
     final int FPSCap = 60;
     public int frame;
     KeyHandler keyHandler = new KeyHandler();
     TileManager tileM = new TileManager(this);
     Thread gameThread;
-    Player player = new Player(this, keyHandler);
+    public Player player = new Player(this, keyHandler);
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.white);
@@ -59,6 +61,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + frame);
+                System.out.println("Player Y: " + player.worldY);
+                System.out.println("Player X: " + player.worldX);
                 frame = 0;
                 timer = 0;
             }

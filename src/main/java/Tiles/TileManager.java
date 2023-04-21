@@ -5,8 +5,6 @@ import Utilities.FileHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class TileManager {
     GamePanel gp;
@@ -16,9 +14,9 @@ public class TileManager {
     public TileManager(GamePanel gp)
     {
         this.gp = gp;
-        this.tiles = new Tile[3];
+        this.tiles = new Tile[4];
         loadTileImages();
-        loadMapArray();
+        loadMapArray("map1");
     }
 
     private void loadTileImages() {
@@ -31,38 +29,26 @@ public class TileManager {
         }
     }
 
-    private void loadMapArray() {
+    private void loadMapArray(String mapName) {
         FileHandler files = new FileHandler();
-        map = files.readMapAsArrayFromFile("maps/map1.txt", gp.maxScreenRows, gp.maxScreenColumns);
+        map = files.readMapAsArrayFromFile("maps/" + mapName + ".txt", gp.maxWorldRows, gp.maxWorldColumns);
     }
 
     public void draw(Graphics2D g2) {
-        int posX, posY,tileCode;
-        for(int i=0; i<gp.maxScreenRows; i++) {
-            for(int j=0; j<gp.maxScreenColumns; j++) {
-                posX = j*gp.tileSize;
-                posY = i*gp.tileSize;
-                tileCode = map[i][j]%100;
-                g2.drawImage(tiles[tileCode].image, posX, posY, gp.tileSize, gp.tileSize, null);
+        for(int i=0; i<gp.maxWorldRows; i++) {
+            for(int j=0; j<gp.maxWorldColumns; j++) {
+                int worldX = i *gp.tileSize;
+                int worldY = j *gp.tileSize;
+                int screenX = worldX - gp.player.worldX + gp.player.screenX;
+                int screenY = worldY - gp.player.worldY + gp.player.screenY;
+                int tileCode = map[i][j]%100;
+                if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+                   worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+                   worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+                   worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                    g2.drawImage(tiles[tileCode].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                }
             }
-        }
-    }
-
-
-    //a temporary solution to generate new map
-    public void regenerateMap() {
-        int[][] result = new int[gp.maxScreenRows][gp.maxScreenColumns];
-        for(int i = 0;i<gp.maxScreenRows; i++) {
-            for(int j = 0; j<gp.maxScreenColumns; j++) {
-                int randomNum = ThreadLocalRandom.current().nextInt(0, 3);
-                result[i][j] = 100+randomNum;
-            }
-        }
-        try {
-            FileHandler files = new FileHandler();
-            files.writeArrayToFile(result, "maps/map1.txt");
-        }catch(IOException e) {
-            e.printStackTrace();
         }
     }
 }

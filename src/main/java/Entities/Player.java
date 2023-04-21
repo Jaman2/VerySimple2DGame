@@ -10,9 +10,13 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     GamePanel gamePanel;
     KeyHandler keyHandler;
+    public final int screenX, screenY;
     public Player(GamePanel gp, KeyHandler kh) {
         this.gamePanel = gp;
         this.keyHandler = kh;
+        this.screenX =(gp.screenWidth/2) - (gp.tileSize/2);
+        this.screenY = (gp.screenHeight/2) - (gp.tileSize/2);
+
         setDefaultValues();
         getPlayerImage();
     }
@@ -23,33 +27,36 @@ public class Player extends Entity {
         runRight = files.getImagesAsArray("/player/runRight/", "frame0", ".png", 10);
     }
     public void setDefaultValues() {
-        positionX = gamePanel.tileSize;
-        positionY = gamePanel.tileSize;
-        movementSpeed = 3;
+        worldX = gamePanel.tileSize*20;
+        worldY = gamePanel.tileSize*20;
+        movementSpeed = 4;
         action = "idle";
+        lastAction = "runRight";
     }
 
     public void update() {
         boolean moved = false;
-        if(keyHandler.upPressed && positionY>movementSpeed) {
-            positionY -= movementSpeed;
-            action = "runRight";
+        if(keyHandler.upPressed && worldY > movementSpeed) {
+            worldY -= movementSpeed;
+            action = lastAction;
             moved = true;
         }
-        if(keyHandler.downPressed && positionY<(gamePanel.screenHeight - gamePanel.tileSize)) {
-            positionY += movementSpeed;
-            action = "runLeft";
+        if(keyHandler.downPressed && worldY < (gamePanel.maxWorldRows * (gamePanel.tileSize - 1 ))) {
+            worldY += movementSpeed;
+            action = lastAction;
             moved = true;
         }
 
-        if(keyHandler.leftPressed && positionX>movementSpeed) {
-            positionX -= movementSpeed;
+        if(keyHandler.leftPressed && worldX > movementSpeed) {
+            worldX -= movementSpeed;
             action = "runLeft";
+            lastAction = "runLeft";
             moved = true;
         }
-        if(keyHandler.rightPressed && positionX<(gamePanel.screenWidth-gamePanel.tileSize)) {
-            positionX += movementSpeed;
+        if(keyHandler.rightPressed && worldX < (gamePanel.maxWorldRows * gamePanel.tileSize)) {
+            worldX += movementSpeed;
             action = "runRight";
+            lastAction = "runRight";
             moved = true;
         }
 
@@ -66,6 +73,6 @@ public class Player extends Entity {
             case "runRight" -> runRight[whichFrameToDraw];
             default -> null;
         };
-        graphics2D.drawImage(image, positionX, positionY, gamePanel.tileSize, gamePanel.tileSize, null);
+        graphics2D.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
     }
 }
